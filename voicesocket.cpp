@@ -22,7 +22,7 @@ void VoiceSocket::writeData(QByteArray data)
 {
     //if(!isEnabled) return;
     QByteArray data2 = qCompress(data, 9);
-    //qDebug() << "Sent  " << peer_ip;
+    qDebug() << "Sent  " << peer_ip;
     //qDebug() << "Sent1 " << data.length();
     //qDebug() << "Sent2 " << data2.length();
     udp.writeDatagram(data2, peer_ip, peer_port);
@@ -36,7 +36,7 @@ void VoiceSocket::udp_readyRead()
     QByteArray data;
     data.resize(size);
     udp.readDatagram(data.data(), size, &host, &port);
-    //qDebug() << "Recd  " << host;
+    qDebug() << "Recd  " << host;
     //if(!isEnabled) return;
     //if(host != peer_ip) return;
     QByteArray data2 = qUncompress(data);

@@ -16,26 +16,35 @@ VoiceIO::VoiceIO(QObject *parent) : QObject(parent)
     format.setByteOrder(QAudioFormat::LittleEndian);
     format.setSampleType(QAudioFormat::SignedInt);
 
-    QAudioDeviceInfo info = QAudioDeviceInfo::defaultInputDevice();
-    if (!info.isFormatSupported(format))
+    QAudioDeviceInfo inputInfo = QAudioDeviceInfo::defaultInputDevice();
+    if (!inputInfo.isFormatSupported(format))
     {
         qWarning() << "Default format not supported, trying to use the nearest.";
-        format = info.nearestFormat(format);
-        qDebug() << format.sampleRate();
-        qDebug() << format.sampleSize();
+        format = inputInfo.nearestFormat(format);
     }
+    qDebug() << "In device  : " << inputInfo.deviceName();
+    qDebug() << "Sample rate: " << format.sampleRate();
+    qDebug() << "Sample size: " << format.sampleSize();
+    qDebug() << "Channel cnt: " << format.channelCount();
+    qDebug() << "Codec      : " << format.codec();
 
     QAudioInput *InputAudio = new QAudioInput(format, this);
+    devInput = InputAudio->start();
+
+    QAudioDeviceInfo outputInfo = QAudioDeviceInfo::defaultOutputDevice();
+    if (!outputInfo.isFormatSupported(format))
+    {
+        qWarning() << "Default format not supported, trying to use the nearest.";
+        format = outputInfo.nearestFormat(format);
+    }
+    qDebug() << "Out device : " << outputInfo.deviceName();
+    qDebug() << "Sample rate: " << format.sampleRate();
+    qDebug() << "Sample size: " << format.sampleSize();
+    qDebug() << "Channel cnt: " << format.channelCount();
+    qDebug() << "Codec      : " << format.codec();
 
     QAudioOutput *OutputAudio = new QAudioOutput(format, this);
-
-    devInput  = InputAudio->start();
-    qDebug() << "Started " << info.deviceName();
-
-    //OutputAudio->start(devInput);
     devOutput = OutputAudio->start();
-    QAudioDeviceInfo infoOutput(QAudioDeviceInfo::defaultOutputDevice());
-    qDebug() << "Started " << infoOutput.deviceName();
 
     connect(devInput, SIGNAL(readyRead()), this, SLOT(devInput_readyRead()));
 }

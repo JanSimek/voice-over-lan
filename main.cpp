@@ -1,13 +1,11 @@
-#include "mainwindow.h"
-#include <QApplication>
+#include <QCoreApplication>
+#include <QCommandLineParser>
 
 #include "messenger.h"
 
-#include <QCommandLineParser>
-
 int main(int argc, char *argv[])
 {
-    QApplication a(argc, argv);
+    QCoreApplication a(argc, argv);
     a.setApplicationName("voice-over-lan");
     a.setApplicationVersion("0.1");
 
@@ -15,7 +13,7 @@ int main(int argc, char *argv[])
     parser.setApplicationDescription("Voice over LAN");
     parser.addHelpOption();
     parser.addVersionOption();
-    parser.addPositionalArgument("address", QApplication::translate("main", "Address of the counterpart"));
+    parser.addPositionalArgument("address", QCoreApplication::translate("main", "Address of the counterpart"));
 
     parser.process(a);
 
@@ -26,9 +24,6 @@ int main(int argc, char *argv[])
     }
 
     Messenger msgr(address);
-
-    //MainWindow w;
-    //w.show();
 
     return a.exec();
 }

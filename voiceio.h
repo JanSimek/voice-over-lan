@@ -21,7 +21,6 @@ private slots:
 private:
     QIODevice* devInput;
     QIODevice* devOutput;
-
 };
 
 #endif // VOICEIO_H

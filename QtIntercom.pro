@@ -24,16 +24,15 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 
 SOURCES += main.cpp\
-        mainwindow.cpp \
     voiceio.cpp \
     voicesocket.cpp \
     buffer.cpp \
     messenger.cpp
 
-HEADERS  += mainwindow.h \
+HEADERS  += \
     voiceio.h \
     voicesocket.h \
     buffer.h \
     messenger.h
 
-FORMS    += mainwindow.ui
+FORMS    +=
