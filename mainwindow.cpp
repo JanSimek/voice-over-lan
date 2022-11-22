@@ -77,7 +77,7 @@ void MainWindow::onTimeout()
 {
     for(int i = 0; i < client_list.count(); i++)
     {
-        if(client_list.at(i)->state()){
+        if(!client_list.at(i)->state()){
             QString dis_con_ip = client_list.at(i)->peerAddress().toString();
             dis_con_ip = dis_con_ip.right(dis_con_ip.length() - dis_con_ip.indexOf(":",3)-1);
             int del_num=0;
