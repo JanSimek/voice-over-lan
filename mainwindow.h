@@ -34,6 +34,7 @@ public:
     QTcpServer m_server;
     bool on_check_connectlist(QString connected_ip);
     QList <QTcpSocket*> client_list;
+    void createUsersList();
 private slots:
     void on_actionexit_triggered();
     void on_show_detail(QListWidgetItem*);
