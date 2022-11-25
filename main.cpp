@@ -1,19 +1,23 @@
-#include <QCoreApplication>
-#include <QCommandLineParser>
+#include "mainwindow.h"
+#include <QApplication>
+#include <QSplashScreen>
+#include <QFile>
 
-#include "messenger.h"
+#include <QCommandLineParser>
 
 int main(int argc, char *argv[])
 {
-    QCoreApplication a(argc, argv);
+    QApplication a(argc, argv);
     a.setApplicationName("voice-over-lan");
     a.setApplicationVersion("0.1");
+
+    QPixmap m( "./Resource/logo.png");
 
     QCommandLineParser parser;
     parser.setApplicationDescription("Voice over LAN");
     parser.addHelpOption();
     parser.addVersionOption();
-    parser.addPositionalArgument("address", QCoreApplication::translate("main", "Address of the counterpart"));
+    parser.addPositionalArgument("address", QApplication::translate("main", "Address of the counterpart"));
 
     parser.process(a);
 
@@ -23,7 +27,17 @@ int main(int argc, char *argv[])
         address = parser.positionalArguments().at(0);
     }
 
-    Messenger msgr(address);
+        MainWindow w;
+
+    QSplashScreen splash(m);
+    splash.show();
+
+    splash.finish(&w);
+
+
+    w.show();
+
+
 
     return a.exec();
 }

@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui multimedia
+QT       += core gui multimedia sql
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -24,15 +24,18 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 
 SOURCES += main.cpp\
+    mainwindow.cpp \
     voiceio.cpp \
     voicesocket.cpp \
     buffer.cpp \
     messenger.cpp
 
 HEADERS  += \
+    mainwindow.h \
     voiceio.h \
     voicesocket.h \
     buffer.h \
     messenger.h
 
-FORMS    +=
+FORMS    += \
+    mainwindow.ui

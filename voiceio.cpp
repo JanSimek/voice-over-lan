@@ -1,57 +1,35 @@
 #include "voiceio.h"
-
-#include <QAudio>
-#include <QAudioInput>
-#include <QAudioOutput>
-
-#include <QDebug>
+#define SampleRate 44100
+#define ChannelCnt 1
+#define SampleSize 32
+#define BUFF_SIZE           4000
 
 VoiceIO::VoiceIO(QObject *parent) : QObject(parent)
 {    
-    QAudioFormat format;
-    format.setSampleRate(8000); // 22050
-    format.setSampleSize(8);    // 16
-    format.setChannelCount(1);
-    format.setCodec("audio/pcm");
-    format.setByteOrder(QAudioFormat::LittleEndian);
-    format.setSampleType(QAudioFormat::SignedInt);
 
-    QAudioDeviceInfo inputInfo = QAudioDeviceInfo::defaultInputDevice();
-    if (!inputInfo.isFormatSupported(format))
-    {
-        qWarning() << "Default format not supported, trying to use the nearest.";
-        format = inputInfo.nearestFormat(format);
-    }
-    qDebug() << "In device  : " << inputInfo.deviceName();
-    qDebug() << "Sample rate: " << format.sampleRate();
-    qDebug() << "Sample size: " << format.sampleSize();
-    qDebug() << "Channel cnt: " << format.channelCount();
-    qDebug() << "Codec      : " << format.codec();
+    formatAudio.setSampleRate(SampleRate);
+    formatAudio.setChannelCount(ChannelCnt);
+    formatAudio.setSampleSize(SampleSize);
+    formatAudio.setCodec("audio/pcm");
+    formatAudio.setByteOrder(QAudioFormat::LittleEndian);
+    formatAudio.setSampleType(QAudioFormat::Float);
 
-    QAudioInput *InputAudio = new QAudioInput(format, this);
-    devInput = InputAudio->start();
+    m_audioInput = new QAudioInput(QAudioDeviceInfo::defaultInputDevice(), formatAudio, this);
+    m_audioOutput = new QAudioOutput(QAudioDeviceInfo::defaultOutputDevice(), formatAudio, this);
 
-    QAudioDeviceInfo outputInfo = QAudioDeviceInfo::defaultOutputDevice();
-    if (!outputInfo.isFormatSupported(format))
-    {
-        qWarning() << "Default format not supported, trying to use the nearest.";
-        format = outputInfo.nearestFormat(format);
-    }
-    qDebug() << "Out device : " << outputInfo.deviceName();
-    qDebug() << "Sample rate: " << format.sampleRate();
-    qDebug() << "Sample size: " << format.sampleSize();
-    qDebug() << "Channel cnt: " << format.channelCount();
-    qDebug() << "Codec      : " << format.codec();
-
-    QAudioOutput *OutputAudio = new QAudioOutput(format, this);
-    devOutput = OutputAudio->start();
+    devInput  = m_audioInput->start();
+    m_buffer.clear();
+    m_audioOutputIODevice.close();
+    m_audioOutputIODevice.setBuffer(&m_buffer);
+    m_audioOutputIODevice.open(QIODevice::ReadOnly);
+    m_audioOutput->start(&m_audioOutputIODevice);
 
     connect(devInput, SIGNAL(readyRead()), this, SLOT(devInput_readyRead()));
 }
 
 void VoiceIO::writeVoice(QByteArray data)
 {
-    devOutput->write(data);
+    m_buffer.append(data);
 }
 
 void VoiceIO::devInput_readyRead()
